@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hera App</title>
+    <meta
+      name="firebase-config"
+      content='{"apiKey":"REPLACE_ME","authDomain":"REPLACE_ME","projectId":"REPLACE_ME","appId":"REPLACE_ME"}'
+    />
+    <style>
+      #user-details-panel[hidden] {
+        display: none;
+      }
+      #user-details-panel.is-open {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="login-btn" type="button">Login con Google</button>
+    <button id="switch-account-btn" type="button">Cambia account</button>
+
+    <button id="user-toggle-btn" type="button">Utente</button>
+    <section id="user-details-panel" hidden>
+      <p>Dettagli utente</p>
+    </section>
+
+    <script src="https://unpkg.com/@capacitor/core@7/dist/capacitor.js"></script>
+    <script>
+      (function loadFirebaseWebOnlyOutsideNativeAndroid() {
+        const isAndroidNative =
+          window.Capacitor &&
+          typeof window.Capacitor.isNativePlatform === 'function' &&
+          window.Capacitor.isNativePlatform() &&
+          typeof window.Capacitor.getPlatform === 'function' &&
+          window.Capacitor.getPlatform() === 'android';
+
+        if (isAndroidNative) {
+          return;
+        }
+
+        const appScript = document.createElement('script');
+        appScript.src = 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js';
+        appScript.defer = true;
+
+        const authScript = document.createElement('script');
+        authScript.src = 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js';
+        authScript.defer = true;
+
+        document.head.appendChild(appScript);
+        document.head.appendChild(authScript);
+      })();
+    </script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
