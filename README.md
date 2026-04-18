@@ -104,9 +104,27 @@ npm install
 npm run android:add
 npm run android:sync
 npm run android:open
+npm run android:apk
 ```
 
 `capacitor.config.json` è già incluso nel repository con `appId` `it.vargacantieri.hera`, quindi non devi inizializzarlo manualmente.
+
+> Nota repository: la cartella `android/` viene generata in locale dai comandi Capacitor ed è esclusa dal versionamento (contiene file binari).
+
+
+### Generare direttamente un APK (debug)
+
+Puoi generare un APK debug con un solo comando (crea/sincronizza automaticamente `android/` se manca):
+
+```bash
+npm run android:apk
+```
+
+Output atteso:
+
+- `android/app/build/outputs/apk/debug/app-debug.apk`
+
+Se il build fallisce per download Gradle/SDK (rete o proxy), apri il progetto con Android Studio (`npm run android:open`) e completa la configurazione guidata del toolchain Android.
 
 In Android Studio:
 - Build > Generate Signed Bundle / APK
