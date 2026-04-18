@@ -1,1 +1,4 @@
 node_modules/
+
+# Generated native Android project (contains binary assets)
+android/
