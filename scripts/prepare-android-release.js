@@ -85,7 +85,7 @@ function patchKotlin(source) {
 
   body = body.replace(/proguard-android\.txt/g, "proguard-android-optimize.txt");
   if (!/proguardFiles\s*\(/.test(body)) {
-    body += "\n        proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")\n";
+    body += `\n        proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")\n`;
   }
 
   return source.slice(0, block.bodyStart) + body + source.slice(block.bodyEnd);
