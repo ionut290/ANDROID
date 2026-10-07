@@ -8,8 +8,9 @@
     "android:add": "npx cap add android",
     "android:sync": "npx cap sync android",
     "android:open": "npx cap open android",
-    "check:syntax": "node --check app.js",
-    "android:apk": "sh -c '[ -f android/gradlew ] || { rm -rf android && npx cap add android; }; npx cap sync android; cd android && ./gradlew assembleDebug'"
+    "android:apk": "sh -c '[ -f android/gradlew ] || { rm -rf android && npx cap add android; }; npx cap sync android; cd android && ./gradlew assembleDebug'",
+    "android:prepare-release": "node scripts/prepare-android-release.js",
+    "android:aab": "node scripts/prepare-android-release.js --bundle"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.2.0"
