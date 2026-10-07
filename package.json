@@ -5,11 +5,12 @@
   "description": "Hera App web + Android wrapper via Capacitor",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "android:add": "npx cap add android",
-    "android:sync": "npx cap sync android",
+    "android:add": "npx cap add android && node scripts/prepare-android.js",
+    "android:sync": "npx cap sync android && node scripts/prepare-android.js",
     "android:open": "npx cap open android",
     "check:syntax": "node --check app.js",
-    "android:apk": "sh -c '[ -f android/gradlew ] || { rm -rf android && npx cap add android; }; npx cap sync android; cd android && ./gradlew assembleDebug'"
+    "android:apk": "sh -c '[ -f android/gradlew ] || { rm -rf android && npx cap add android; }; npx cap sync android; node scripts/prepare-android.js; cd android && ./gradlew assembleDebug'",
+    "android:aab": "sh -c '[ -f android/gradlew ] || { rm -rf android && npx cap add android; }; npx cap sync android; node scripts/prepare-android.js; cd android && ./gradlew bundleRelease'"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.2.0"
