@@ -27,17 +27,13 @@ function listStyleFiles(directory) {
 }
 
 function forceNoActionBarTheme(content) {
-  let changed = false;
-  const stylePattern = /<style\\b([^>]*\\bname=["']AppTheme(?:\\.[^"']*)?["'][^>]*)>/g;
-  const updated = content.replace(stylePattern, (full, attributes) => {
-    if (/\\bparent=["'][^"']*["']/.test(attributes)) {
-      changed = true;
-      return `<style${attributes.replace(/\\bparent=["'][^"']*["']/, 'parent="@android:style/Theme.Material.Light.NoActionBar')}>`;
+  const stylePattern = /<style\b([^>]*\bname=["']AppTheme(?:\.[^"']*)?["'][^>]*)>/g;
+  return content.replace(stylePattern, (full, attributes) => {
+    if (/\bparent=["'][^"']*["']/.test(attributes)) {
+      return "<style" + attributes.replace(/\bparent=["'][^"']*["']/, 'parent="@android:style/Theme.Material.Light.NoActionBar') + ">";
     }
-    changed = true;
-    return `<style${attributes} parent="@android:style/Theme.Material.Light.NoActionBar">`;
+    return "<style" + attributes + ' parent="@android:style/Theme.Material.Light.NoActionBar">';
   });
-  return { content: updated, changed };
 }
 
 fs.mkdirSync(path.join(resourcesRoot, "values"), { recursive: true });
@@ -46,11 +42,9 @@ let foundAppTheme = false;
 
 for (const stylePath of styleFiles) {
   const original = fs.readFileSync(stylePath, "utf8");
-  const result = forceNoActionBarTheme(original);
-  if (result.content !== original) {
-    fs.writeFileSync(stylePath, result.content);
-  }
-  if (/<style\\b[^>]*\\bname=["']AppTheme(?:\\.[^"']*)?["']/.test(result.content)) {
+  const updated = forceNoActionBarTheme(original);
+  if (updated !== original) fs.writeFileSync(stylePath, updated);
+  if (/<style\b[^>]*\bname=["']AppTheme(?:\.[^"']*)?["']/.test(updated)) {
     foundAppTheme = true;
   }
 }
@@ -58,26 +52,24 @@ for (const stylePath of styleFiles) {
 if (!foundAppTheme) {
   fs.writeFileSync(
     path.join(resourcesRoot, "values", "styles.xml"),
-    `<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar" />
-</resources>
-`
+    '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n' +
+      '    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar" />\n' +
+      '</resources>\n'
   );
 }
 
 if (fs.existsSync(manifestPath)) {
   let manifest = fs.readFileSync(manifestPath, "utf8");
-  const applicationPattern = /<application\\b([^>]*)>/;
+  const applicationPattern = /<application\b([^>]*)>/;
   const applicationMatch = manifest.match(applicationPattern);
   if (applicationMatch) {
     let attributes = applicationMatch[1];
-    if (/\\bandroid:theme=["'][^"']*["']/.test(attributes)) {
-      attributes = attributes.replace(/\\bandroid:theme=["'][^"']*["']/, 'android:theme="@style/AppTheme"');
+    if (/\bandroid:theme=["'][^"']*["']/.test(attributes)) {
+      attributes = attributes.replace(/\bandroid:theme=["'][^"']*["']/, 'android:theme="@style/AppTheme"');
     } else {
       attributes += ' android:theme="@style/AppTheme"';
     }
-    manifest = manifest.replace(applicationPattern, `<application${attributes}>`);
+    manifest = manifest.replace(applicationPattern, "<application" + attributes + ">");
   }
   fs.writeFileSync(manifestPath, manifest);
 }
